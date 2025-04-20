@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import {
   CanActivate,
   ExecutionContext,
@@ -5,9 +8,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import jwt from 'express-jwt';
+import { expressjwt } from 'express-jwt';
 import { expressJwtSecret } from 'jwks-rsa';
-import { NextFunction, Request, Response } from 'express';
+import { promisify } from 'node:util';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
@@ -21,25 +25,28 @@ export class AuthorizationGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const httpContext = context.switchToHttp();
-    const req: Request = httpContext.getRequest();
-    const res: Response = httpContext.getResponse();
-    const next: NextFunction = httpContext.getNext();
+    // const httpContext = context.switchToHttp();
+    // const req: Request = httpContext.getRequest();
+    // const res: Response = httpContext.getResponse();
 
-    const checkJWT = jwt.expressjwt({
-      secret: expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: `${this.AUTH0_DOMAIN}.well-known/jwks.json`,
+    const { req, res } = GqlExecutionContext.create(context).getContext();
+
+    const checkJWT = promisify(
+      expressjwt({
+        secret: expressJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: `${this.AUTH0_DOMAIN}.well-known/jwks.json`,
+        }),
+        audience: this.AUTH0_AUDIENCE,
+        issuer: this.AUTH0_DOMAIN,
+        algorithms: ['RS256'],
       }),
-      audience: this.AUTH0_AUDIENCE,
-      issuer: this.AUTH0_DOMAIN,
-      algorithms: ['RS256'],
-    });
+    );
 
     try {
-      await checkJWT(req, res, next);
+      await checkJWT(req, res);
 
       return true;
     } catch (error) {
