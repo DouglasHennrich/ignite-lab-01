@@ -15,9 +15,17 @@
     "lint": "eslint \"{src,apps,libs}/**/*.ts\" --fix"
   },
   "dependencies": {
+    "@apollo/server": "^4.12.0",
+    "@nestjs/apollo": "^13.1.0",
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/graphql": "^13.1.0",
     "@nestjs/platform-express": "^11.0.1",
+    "@prisma/client": "6.6.0",
+    "express-jwt": "^8.5.1",
+    "graphql": "^16.10.0",
+    "jwks-rsa": "^3.2.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -35,11 +43,23 @@
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
     "prettier": "^3.4.2",
+    "prisma": "^6.6.0",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@apollo/protobufjs",
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "@swc/core",
+      "esbuild",
+      "prisma"
+    ]
   }
 }
