@@ -13,7 +13,7 @@ registerEnumType(PurchaseStatusEnum, {
 });
 
 @ObjectType()
-export class Purchases {
+export class Purchase {
   @Field(() => ID)
   id: string;
 

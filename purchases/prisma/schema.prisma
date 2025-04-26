@@ -14,23 +14,27 @@ datasource db {
 }
 
 model Customer {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id String @id @default(uuid())
+
+  authUserId String? @unique
 
   purchases Purchase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Product {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id String @id @default(uuid())
 
   title String
   slug  String @unique
   price Float
 
   purchasedOn Purchase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 enum PurchaseStatus {
@@ -40,10 +44,7 @@ enum PurchaseStatus {
 }
 
 model Purchase {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
+  id     String         @id @default(uuid())
   status PurchaseStatus @default(PENDING)
 
   customerId String
@@ -51,4 +52,7 @@ model Purchase {
 
   productId String
   product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
